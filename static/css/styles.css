@@ -1,0 +1,82 @@
+/* AegisPulse Clinical Command Center - Simplified & Clean Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+:root {
+  --bg-main: #090d16;
+  --bg-card: #0f172a;
+  --bg-card-hover: #162038;
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(56, 189, 248, 0.4);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.05) 0%, transparent 45%);
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Card Styling */
+.clean-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.clean-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Simple Priority Color Strips */
+.priority-strip-1 {
+  border-left: 5px solid #ef4444 !important;
+}
+.priority-strip-2 {
+  border-left: 5px solid #f97316 !important;
+}
+.priority-strip-3 {
+  border-left: 5px solid #eab308 !important;
+}
+.priority-strip-4 {
+  border-left: 5px solid #10b981 !important;
+}
+.priority-strip-5 {
+  border-left: 5px solid #38bdf8 !important;
+}
+
+/* Subtle Glowing Beacon */
+.pulse-beacon-red {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  animation: pulse-red 2s infinite ease-in-out;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

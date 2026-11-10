@@ -1,0 +1,192 @@
+{
+  "dataset_records": 5000,
+  "timestamp": "2026-11-09T20:46:35.533171",
+  "metrics": {
+    "triage_acuity": {
+      "accuracy": 0.976,
+      "f1_score": 0.976,
+      "report": {
+        "1": {
+          "precision": 1.0,
+          "recall": 0.9956331877729258,
+          "f1-score": 0.9978118161925602,
+          "support": 229.0
+        },
+        "2": {
+          "precision": 0.9966442953020134,
+          "recall": 1.0,
+          "f1-score": 0.9983193277310924,
+          "support": 297.0
+        },
+        "3": {
+          "precision": 1.0,
+          "recall": 0.9940828402366864,
+          "f1-score": 0.9970326409495549,
+          "support": 169.0
+        },
+        "4": {
+          "precision": 0.9289940828402367,
+          "recall": 0.9345238095238095,
+          "f1-score": 0.9317507418397626,
+          "support": 168.0
+        },
+        "5": {
+          "precision": 0.9197080291970803,
+          "recall": 0.9197080291970803,
+          "f1-score": 0.9197080291970803,
+          "support": 137.0
+        },
+        "accuracy": 0.976,
+        "macro avg": {
+          "precision": 0.9690692814678661,
+          "recall": 0.9687895733461003,
+          "f1-score": 0.96892451118201,
+          "support": 1000.0
+        },
+        "weighted avg": {
+          "precision": 0.9760743616218577,
+          "recall": 0.976,
+          "f1-score": 0.9760323871937856,
+          "support": 1000.0
+        }
+      }
+    },
+    "deterioration_risk": {
+      "mae": 2.0682,
+      "r2": 0.9837
+    },
+    "service_duration": {
+      "mae_minutes": 4.0123,
+      "r2": 0.847
+    },
+    "ward_allocation": {
+      "accuracy": 0.807,
+      "f1_score": 0.7992,
+      "report": {
+        "Day Observation Bay": {
+          "precision": 0.25,
+          "recall": 0.18181818181818182,
+          "f1-score": 0.21052631578947367,
+          "support": 22.0
+        },
+        "General Medical Ward": {
+          "precision": 0.49504950495049505,
+          "recall": 0.4065040650406504,
+          "f1-score": 0.44642857142857145,
+          "support": 123.0
+        },
+        "HDU / Telemetry Step-Down": {
+          "precision": 0.65,
+          "recall": 0.8524590163934426,
+          "f1-score": 0.7375886524822695,
+          "support": 61.0
+        },
+        "ICU (Intensive Care Unit)": {
+          "precision": 0.9833024118738405,
+          "recall": 1.0,
+          "f1-score": 0.9915809167446211,
+          "support": 530.0
+        },
+        "Outpatient Discharge": {
+          "precision": 0.630901287553648,
+          "recall": 0.6869158878504673,
+          "f1-score": 0.6577181208053692,
+          "support": 214.0
+        },
+        "Pediatric Ward": {
+          "precision": 0.95,
+          "recall": 0.7307692307692307,
+          "f1-score": 0.8260869565217391,
+          "support": 26.0
+        },
+        "Surgical Inpatient Ward": {
+          "precision": 0.45454545454545453,
+          "recall": 0.20833333333333334,
+          "f1-score": 0.2857142857142857,
+          "support": 24.0
+        },
+        "accuracy": 0.807,
+        "macro avg": {
+          "precision": 0.6305426655604911,
+          "recall": 0.5809713878864723,
+          "f1-score": 0.5936634027837614,
+          "support": 1000.0
+        },
+        "weighted avg": {
+          "precision": 0.797813333847618,
+          "recall": 0.807,
+          "f1-score": 0.7991601684882075,
+          "support": 1000.0
+        }
+      }
+    }
+  },
+  "top_features": [
+    {
+      "feature": "pain_score",
+      "importance": 0.3064
+    },
+    {
+      "feature": "gcs",
+      "importance": 0.2985
+    },
+    {
+      "feature": "respiratory_rate",
+      "importance": 0.2008
+    },
+    {
+      "feature": "mews_score",
+      "importance": 0.048
+    },
+    {
+      "feature": "spo2_percent",
+      "importance": 0.045
+    },
+    {
+      "feature": "temperature_c",
+      "importance": 0.0382
+    },
+    {
+      "feature": "heart_rate_bpm",
+      "importance": 0.0282
+    },
+    {
+      "feature": "systolic_bp",
+      "importance": 0.0126
+    },
+    {
+      "feature": "mobility_Walking Independent",
+      "importance": 0.0089
+    },
+    {
+      "feature": "mobility_Assisted Walk",
+      "importance": 0.0084
+    },
+    {
+      "feature": "diastolic_bp",
+      "importance": 0.0021
+    },
+    {
+      "feature": "age",
+      "importance": 0.0018
+    }
+  ],
+  "classes": {
+    "triage_levels": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "wards": [
+      "Day Observation Bay",
+      "General Medical Ward",
+      "HDU / Telemetry Step-Down",
+      "ICU (Intensive Care Unit)",
+      "Outpatient Discharge",
+      "Pediatric Ward",
+      "Surgical Inpatient Ward"
+    ]
+  }
+}

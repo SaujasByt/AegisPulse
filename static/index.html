@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisPulse AI | Hospital Triage & Queue Manager</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Clean Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col selection:bg-sky-500/30">
+
+  <!-- ============================================================ -->
+  <!-- CLEAN TOP NAVBAR                                             -->
+  <!-- ============================================================ -->
+  <header class="border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-cyan-400 flex items-center justify-center shadow-md shadow-sky-500/20">
+          <i data-lucide="activity" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-base tracking-tight text-white">AegisPulse AI</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Live
+            </span>
+          </div>
+          <div class="text-[11px] text-slate-400">Hospital Patient Triage & Queue Manager</div>
+        </div>
+      </div>
+
+      <!-- Clean 3 Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+        <button data-tab-target="queue" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 bg-sky-500 text-white shadow-sm transition">
+          <i data-lucide="list-ordered" class="w-4 h-4"></i>
+          <span>Patient Queue</span>
+          <span id="nav-queue-count" class="ml-1 px-1.5 py-0.2 rounded-full bg-black/25 text-[10px]">7</span>
+        </button>
+
+        <button data-tab-target="intake" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition">
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span>Add Patient</span>
+        </button>
+
+        <button data-tab-target="beds" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition">
+          <i data-lucide="bed" class="w-4 h-4"></i>
+          <span>Beds & Analytics</span>
+        </button>
+      </nav>
+
+      <!-- Right controls: Sound & Clock -->
+      <div class="flex items-center gap-3">
+        <button id="sound-toggle-btn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 transition" title="Toggle Sound">
+          <i id="sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
+        </button>
+        <span id="live-clock" class="hidden sm:inline font-mono text-xs text-slate-400">--:--:--</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- MAIN CONTENT CONTAINER                                       -->
+  <!-- ============================================================ -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Top 3 Clean Summary KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      
+      <!-- Card 1: Queue Count -->
+      <div class="p-4 rounded-xl clean-card flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-slate-400">Patients in Queue</div>
+          <div id="kpi-queue-count" class="text-2xl font-bold text-white mt-1">7 Patients</div>
+          <div class="text-[11px] text-sky-400 mt-0.5">Ranked dynamically by urgency</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+          <i data-lucide="users" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Card 2: Average Wait -->
+      <div class="p-4 rounded-xl clean-card flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-slate-400">Average Wait Time</div>
+          <div id="kpi-avg-wait" class="text-2xl font-bold text-emerald-400 mt-1">18 mins</div>
+          <div class="text-[11px] text-emerald-400 font-semibold mt-0.5">72% faster for emergencies</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Card 3: Beds Available -->
+      <div class="p-4 rounded-xl clean-card flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-slate-400">Hospital Beds Available</div>
+          <div id="kpi-beds-free" class="text-2xl font-bold text-white mt-1">28 Free</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Across all 6 hospital wards</div>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <i data-lucide="bed" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: PATIENT QUEUE (SIMPLIFIED & INTUITIVE)                -->
+    <!-- ============================================================ -->
+    <div data-tab-content="queue" class="space-y-4">
+      
+      <!-- Action Bar -->
+      <div class="p-4 rounded-xl clean-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base font-bold text-white">Live Patient Queue</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Patients are continuously sorted so high-urgency cases are seen immediately without ignoring waiting patients.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="fetchAllData()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">
+            Refresh
+          </button>
+          <button onclick="callTopPatient()" class="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-md shadow-sky-500/20 flex items-center gap-1.5 transition">
+            <i data-lucide="phone-call" class="w-4 h-4"></i>
+            <span>Call Next Patient</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean Patient Queue Cards List -->
+      <div id="queue-cards-list" class="space-y-3">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Doctor Rooms Strip -->
+      <div class="pt-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+          <i data-lucide="stethoscope" class="w-4 h-4 text-sky-400"></i>
+          <span>Doctor Consultation Rooms</span>
+        </h3>
+        <div id="doctor-rooms-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <!-- Rendered by JavaScript -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: TRIAGE & ADD PATIENT (EASY & FAST)                   -->
+    <!-- ============================================================ -->
+    <div data-tab-content="intake" class="hidden space-y-4">
+      
+      <!-- 1-Click Common Case Selector -->
+      <div class="p-4 rounded-xl clean-card space-y-2">
+        <div class="text-xs font-bold text-slate-300">Quick-Fill Common Scenarios (1-Click Test):</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button onclick="applyScenario('cardiac')" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left transition">
+            <div class="text-xs font-bold text-rose-400 flex items-center gap-1">
+              <i data-lucide="heart" class="w-3.5 h-3.5"></i>
+              <span>Severe Chest Pain</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">High urgency cardiac event</div>
+          </button>
+
+          <button onclick="applyScenario('breathing')" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left transition">
+            <div class="text-xs font-bold text-amber-400 flex items-center gap-1">
+              <i data-lucide="wind" class="w-3.5 h-3.5"></i>
+              <span>Severe Asthma / Dyspnea</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Low oxygen & wheezing</div>
+          </button>
+
+          <button onclick="applyScenario('injury')" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left transition">
+            <div class="text-xs font-bold text-sky-400 flex items-center gap-1">
+              <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+              <span>Ankle Sprain</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Moderate pain, stable</div>
+          </button>
+
+          <button onclick="applyScenario('checkup')" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left transition">
+            <div class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+              <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+              <span>Prescription Refill</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Routine non-urgent visit</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Form + Live Result Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        
+        <!-- Form (7 Cols) -->
+        <div class="md:col-span-7 p-5 rounded-xl clean-card space-y-4">
+          <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-2">Patient Details & Vitals</h3>
+          
+          <form id="simplified-intake-form" class="space-y-4">
+            
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Patient Name</label>
+                <input id="form-name" type="text" value="Eleanor Sterling" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:border-sky-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Age</label>
+                <input id="form-age" type="number" value="68" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:border-sky-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Gender</label>
+                <select id="form-gender" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white">
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Department</label>
+                <select id="form-dept" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white">
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Emergency / Trauma">Emergency / Trauma</option>
+                  <option value="Pulmonology">Pulmonology</option>
+                  <option value="General Medicine">General Medicine</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Neurology">Neurology</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Chief Symptom / Complaint</label>
+              <input id="form-complaint" type="text" value="Crushing chest pain radiating to left jaw & diaphoresis" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:border-sky-500 focus:outline-none">
+            </div>
+
+            <!-- 4 Clean Vitals Inputs -->
+            <div class="pt-2 border-t border-slate-800 space-y-2">
+              <div class="text-xs font-semibold text-slate-300">Key Physiological Vitals:</div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Heart Rate (bpm)</label>
+                  <input id="form-hr" type="number" value="122" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Blood Pressure</label>
+                  <input id="form-bp" type="text" value="188/108" placeholder="120/80" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Oxygen SpO2 (%)</label>
+                  <input id="form-spo2" type="number" value="90" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Pain (0 - 10)</label>
+                  <input id="form-pain" type="number" min="0" max="10" value="9" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-md shadow-sky-500/20 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Add Patient to Queue</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Prediction Card (5 Cols) -->
+        <div class="md:col-span-5 p-5 pb-6 rounded-xl clean-card space-y-4 bg-slate-900/60 h-fit self-start overflow-visible">
+          <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-2 flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i>
+            <span>Instant AI Prioritization</span>
+          </h3>
+
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center space-y-1">
+            <div class="text-[11px] text-slate-400 font-medium">Assigned Urgency Level</div>
+            <div id="ai-acuity-badge" class="text-xl font-bold text-rose-400 font-mono">
+              ESI 1: Immediate / Resuscitation
+            </div>
+            <div id="ai-sla-wait" class="text-xs font-semibold text-rose-300">Target SLA: Immediate (&lt; 1m)</div>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">Deterioration Risk:</span>
+              <span id="ai-risk-val" class="font-bold text-rose-400">99.4% (Critical)</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">Estimated Doctor Time:</span>
+              <span id="ai-duration-val" class="font-bold text-white">~34 minutes</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">Admission Verdict:</span>
+              <span id="ai-admission-verdict" class="font-bold text-amber-400">Hospital Bed Needed</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">Recommended Ward:</span>
+              <span id="ai-ward-val" class="font-bold text-sky-400">ICU (Intensive Care)</span>
+            </div>
+          </div>
+
+          <div id="ai-decision-logic-box" class="p-4 pb-5 rounded-xl bg-sky-950/20 border border-sky-500/30 text-xs text-sky-200 leading-relaxed transition-all duration-300 min-h-[95px] overflow-visible break-words mb-2">
+            <span class="font-semibold text-sky-300">AI Decision Logic:</span> <span id="ai-decision-logic-text">Elevated heart rate (122 bpm) and low oxygen (90%) combined with severe crushing pain flags this patient as top clinical priority.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: BEDS & HOSPITAL OVERVIEW                             -->
+    <!-- ============================================================ -->
+    <div data-tab-content="beds" class="hidden space-y-6">
+      
+      <!-- Ward Capacities Cards -->
+      <div>
+        <h3 class="text-sm font-bold text-white mb-3">Hospital Ward Capacity</h3>
+        <div id="ward-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <!-- Rendered by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Simple AI Impact Stat -->
+      <div class="p-5 rounded-xl clean-card bg-gradient-to-r from-slate-900 to-sky-950/40 border border-sky-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Clinical Impact</span>
+          <h4 class="text-lg font-bold text-white mt-0.5">Emergency Patient Wait Time Cut by 72.7%</h4>
+          <p class="text-xs text-slate-400 mt-1">Under standard FIFO queuing, emergency patients wait 13.2 minutes. With AegisPulse AI, critical cases are attended in 3.6 minutes without delaying non-urgent patients.</p>
+        </div>
+
+        <div class="text-center sm:text-right shrink-0">
+          <div class="text-3xl font-bold font-mono text-emerald-400">-72.7%</div>
+          <div class="text-xs text-slate-400">Critical Wait Reduction</div>
+        </div>
+      </div>
+
+      <!-- Currently Occupied Beds with Discharge Action -->
+      <div class="space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="bed-double" class="w-4 h-4 text-sky-400"></i>
+              <span>Occupied Inpatient Beds (Quick Discharge)</span>
+            </h3>
+            <span class="text-xs text-slate-400">Filter across all 6 inpatient care wards or discharge patients</span>
+          </div>
+
+          <!-- Ward Filter Selector Dropdown -->
+          <div class="flex items-center gap-2">
+            <label for="bed-ward-filter" class="text-xs text-slate-400 font-medium whitespace-nowrap">Filter Ward:</label>
+            <select id="bed-ward-filter" onchange="onWardFilterChange(this.value)" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:border-sky-500 focus:outline-none cursor-pointer">
+              <option value="ALL">All Care Wards (All 6 Units)</option>
+              <option value="ICU (Intensive Care Unit)">ICU (Intensive Care Unit)</option>
+              <option value="HDU / Telemetry Step-Down">HDU / Telemetry Step-Down</option>
+              <option value="General Medical Ward">General Medical Ward</option>
+              <option value="Surgical Inpatient Ward">Surgical Inpatient Ward</option>
+              <option value="Pediatric Ward">Pediatric Ward</option>
+              <option value="Day Observation Bay">Day Observation Bay</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="occupied-beds-table" class="space-y-2 max-h-[520px] overflow-y-auto pr-1">
+          <!-- Rendered by JavaScript -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 py-4 text-center text-xs text-slate-500 font-mono mt-auto">
+    AegisPulse AI • Simplified Clinical Hospital Prioritization System
+  </footer>
+
+  <!-- Clean Application Script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
